@@ -2,6 +2,7 @@ package ca.qc.lab2exercise
 
 import PizzaViewModel
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -22,8 +23,10 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults.TrailingIcon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -49,6 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import ca.qc.lab2exercise.ui.theme.Lab2ExerciseTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +96,10 @@ fun AppNav() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("selection") {
-                PizzaSelectionScreen(viewModel = viewModel, navController = navController)
+                PizzaSelectionScreen(viewModel = viewModel,
+                    navController = navController,
+                    scope = scope,
+                    snackbarHostState = snackbarHostState)
             }
             composable("bill") {
                 PizzaBillScreen(
@@ -110,7 +117,8 @@ fun AppNav() {
 }
 
 @Composable
-fun PizzaSelectionScreen(viewModel: PizzaViewModel, navController: NavController) {
+fun PizzaSelectionScreen(viewModel: PizzaViewModel, navController: NavController,
+                         scope : CoroutineScope, snackbarHostState: SnackbarHostState ) {
     val menu = listOf("Pepperoni", "Cheese", "Italian Sausage", "Supreme (Everything)", "Mushroom")
     val sizes = listOf("Petite", "Moyenne", "Grande")
     val tips = listOf("0%", "10%", "15%", "20%")
@@ -145,8 +153,23 @@ fun PizzaSelectionScreen(viewModel: PizzaViewModel, navController: NavController
         Spacer(Modifier.height(30.dp))
         Button(
             onClick = {
-                viewModel.calculateTotal()
-                navController.navigate("bill")
+//                viewModel.calculateTotal()
+//                navController.navigate("bill")
+
+                //Exercise using Scope
+                scope.launch{
+                    val result = snackbarHostState.showSnackbar(
+                        message = "Confirm your order ?",
+                        actionLabel = "Yes",
+                        duration = SnackbarDuration.Long
+                    )
+                    if(result == SnackbarResult.ActionPerformed){
+                        viewModel.calculateTotal()
+                        navController.navigate("bill")
+                    }else{
+                        Log.d("Pizza App","user did not confirm the order")
+                    }
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
