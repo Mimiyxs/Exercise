@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -131,7 +135,11 @@ fun TodoScreen() {
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Fetch Posts")
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Rechercher",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
             LazyColumn {
                 items(posts) { post ->
