@@ -18,8 +18,10 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
+//    primary = Purple40,
+//    secondary = PurpleGrey40,
+    primary = BrunPrimary,
+    secondary = BrunOnPrimary,
     tertiary = Pink40
 
     /* Other default colors to override
@@ -36,8 +38,8 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun Labo2Formatif2Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+
+    dynamicColor: Boolean = false, // Important
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
