@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Exercise_Ergonomie</string>
+    <string name="title_activity_codelab_exercise">codelab_exercise</string>
 </resources>

@@ -20,6 +20,18 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
+                <!--category android:name="android.intent.category.LAUNCHER" /-->
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".codelab_exercise"
+            android:exported="true"
+            android:label="@string/title_activity_codelab_exercise"
+            android:theme="@style/Theme.Exercise_Ergonomie"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
