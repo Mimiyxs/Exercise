@@ -1,5 +1,6 @@
 package ca.qc.exercise_ergonomie
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,8 +12,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -46,9 +51,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Exercise_ErgonomieTheme {
-                //val windowSizeClass = calculateWindowSizeClass(this)
+                // Compact version
+//                val windowSizeClass = calculateWindowSizeClass(this)
+
+                // Expanded version
+//                val windowSizeClass = WindowSizeClass.calculateFromSize(
+//                    DpSize(1000.dp, 800.dp)
+//                )
+                // Midium version
                 val windowSizeClass = WindowSizeClass.calculateFromSize(
-                    DpSize(1000.dp, 800.dp)
+                    DpSize(700.dp, 800.dp)
                 )
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -72,7 +84,6 @@ class MainActivity : ComponentActivity() {
 
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-
                         Text(
                             text = "Test 1",
                             style = MaterialTheme.typography.headlineSmall,
@@ -83,61 +94,89 @@ class MainActivity : ComponentActivity() {
                             style = MaterialTheme.typography.headlineSmall,
                             color = MaterialTheme.colorScheme.tertiary
                         )
-
-                        ProfileLayout(windowSizeClass)
-
+                        Exercise1_ProfileLayout(windowSizeClass)
+                        val list = listOf<String>("Apple", "Orange", "Tomatos", "Banana", "Carrots")
+                        Exercise2_AdaptiveGrid(windowSizeClass, list)
                     }
                 }
             }
         }
     }
+}
+    @SuppressLint("SuspiciousIndentation")
     @Composable
-    fun ProfileLayout(windowSizeClass: WindowSizeClass) {
+    fun Exercise1_ProfileLayout(windowSizeClass: WindowSizeClass) {
         // TODO: 1. Récupérez la classe de largeur.
         val widthClass = windowSizeClass.widthSizeClass
-            // TODO: 2. Utilisez 'when' pour basculer entre Column etRow.
-            when (widthClass) {
-                WindowWidthSizeClass.Compact, WindowWidthSizeClass.Medium  -> {
-                    Column(modifier = Modifier
-                        .fillMaxWidth(), verticalArrangement = Arrangement.Center) {
+        // TODO: 2. Utilisez 'when' pour basculer entre Column etRow.
+        when (widthClass) {
+            WindowWidthSizeClass.Compact, WindowWidthSizeClass.Medium -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(), verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "User's name",
+                        style = MaterialTheme.typography.headlineSmall,
+                        textDecoration = TextDecoration.Underline
+                    )
+                    Text(text = "User's info")
+                    Image(
+                        painter = painterResource(R.drawable.person),
+                        contentDescription = "Profile picture",
+                        modifier = Modifier.size(80.dp)
+                            .clip(CircleShape)
+                    )
+                }
+            }
+
+            WindowWidthSizeClass.Expanded -> {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.person),
+                        contentDescription = "Profile picture",
+                        modifier = Modifier.size(40.dp)
+                            .clip(CircleShape)
+                    )
+                    Column(modifier = Modifier.fillMaxWidth()) {
                         Text(
                             text = "User's name",
                             style = MaterialTheme.typography.headlineSmall,
-                            textDecoration = TextDecoration.Underline)
-                        Text(text = "User's info")
-
-                        Image(
-                            painter = painterResource(R.drawable.person),
-                            contentDescription = "Profile picture",
-                            modifier = Modifier.size(80.dp)
-                                .clip(CircleShape)
+                            textDecoration = TextDecoration.Underline
+                        )
+                        Text(
+                            text = "User's info"
                         )
                     }
-                }
-                WindowWidthSizeClass.Expanded -> {
-                    Row(modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center){
-                        Image(
-                            painter = painterResource(R.drawable.person),
-                            contentDescription = "Profile picture",
-                            modifier = Modifier.size(40.dp)
-                                .clip(CircleShape)
-                        )
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                text = "User's name",
-                                style = MaterialTheme.typography.headlineSmall,
-                                textDecoration = TextDecoration.Underline)
-                            Text(
-                                text = "User's info")
-                        }
-
-                    }
 
                 }
-                    else -> { // Compact ou Medium
 
-                }
             }
-    }
+            else -> { // Compact ou Medium
+            }
+        }
 }
+
+    @Composable
+    fun Exercise2_AdaptiveGrid(windowSizeClass: WindowSizeClass, items:
+    List<String>) {
+        // TODO: 1. Déterminez le nombre de colonnes
+        val numColumns = when (windowSizeClass.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> 1
+            WindowWidthSizeClass.Medium -> 2
+            WindowWidthSizeClass.Expanded -> 4
+            else -> {1}
+        }
+        // TODO: 2. Implémentez la grille adaptative
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(numColumns),
+            modifier = Modifier.height(200.dp)
+        ) {
+            items(items){ i ->
+                Text(text = i)
+            }
+        }
+    }
